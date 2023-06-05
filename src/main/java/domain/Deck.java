@@ -17,7 +17,7 @@ public class Deck {
 
     private final List<Card> cards = new ArrayList<>();
 
-    public void add(Card card) {
+    public void add(final Card card) {
         cards.add(card);
     }
 
@@ -30,6 +30,7 @@ public class Deck {
         for (final Card card : cards) {
             sumOfCard += getValue(card.getNumber());
         }
+
         if (hasAce()) {
             return tempAceOfValue(sumOfCard);
         }
@@ -62,6 +63,7 @@ public class Deck {
     }
 
     private boolean hasAce() {
-        return cards.stream().anyMatch(card -> isAceCard(card.getNumber()));
+        return cards.stream()
+            .anyMatch(card -> isAceCard(card.getNumber()));
     }
 }
