@@ -21,7 +21,7 @@ public abstract class Participant {
         return deck.getSumOfValue();
     }
 
-    public void add(Card card) {
+    public void add(final Card card) {
         deck.add(card);
     }
 
