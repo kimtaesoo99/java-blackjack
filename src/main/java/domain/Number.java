@@ -1,5 +1,7 @@
 package domain;
 
+import exception.WrongMatchNumberException;
+
 import java.util.Arrays;
 
 public enum Number {
@@ -19,11 +21,12 @@ public enum Number {
     JACK("J", 12);
 
     private static final int NUMBER_TYPE = 13;
+    private static final String NUMBER_ERROR_MESSAGE = "잘못된 매칭 번호입니다.";
 
     private final String name;
     private final int choose;
 
-    Number(String name, int choose) {
+    Number(final String name, final int choose) {
         this.name = name;
         this.choose = choose;
     }
@@ -31,7 +34,8 @@ public enum Number {
     public static Number findMatchingNumber(final int matchNumber) {
         return Arrays.stream(Number.values())
             .filter(number -> isMatchingNumber(matchNumber, number))
-            .findFirst().orElseThrow();
+            .findFirst()
+            .orElseThrow(() -> new WrongMatchNumberException(NUMBER_ERROR_MESSAGE));
     }
 
     private static boolean isMatchingNumber(final int matchNumber, final Number number) {
