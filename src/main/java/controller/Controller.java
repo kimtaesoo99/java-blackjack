@@ -1,26 +1,32 @@
 package controller;
 
 import domain.*;
+import dto.PlayersNameResponseDto;
+import exception.DuplicateNameException;
+import exception.WrongNameException;
 import view.InputView;
 import view.OutputView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static domain.Command.YES;
+import static domain.Command.getCommand;
+import static dto.ParticipantResponseDto.toDto;
 
 public class Controller {
 
     private static final String DEALER = "딜러";
     private static final String SEPARATOR = ",";
-    private static final int PLAYER_INDEX = 1;
-    private static final int DEALER_INDEX = 0;
-    private static final String YES = "y";
 
-    private final Cards cards = new Cards();
-
-    private List<Participant> participants;
+    private Cards cards;
+    private Participants participants;
+    private Referee referee;
 
     public void start() {
+        initCards();
         initParticipant();
         initCardSetting();
         addMoreCardOfPlayers();
@@ -29,66 +35,71 @@ public class Controller {
         result();
     }
 
-    private void initParticipant() {
-        participants = new ArrayList<>();
-        participants.add(new Dealer(new Name(DEALER)));
-        addPlayers();
+    private void initCards() {
+        cards = Cards.createAutoCards();
     }
 
-    private void addPlayers() {
+    private void initParticipant() {
+        List<Participant> players = new ArrayList<>();
         try {
-            String nameInfo = InputView.readParticipantName();
-            String[] names = nameInfo.split(SEPARATOR);
-            Arrays.stream(names).forEach(name -> participants.add(new Player(new Name(name))));
-        } catch (IllegalStateException e) {
-            addPlayers();
+            Dealer dealer = new Dealer(new Name(DEALER));
+            addPlayers(players);
+            participants = Participants.createDealerAndPlayers(dealer, players);
+        } catch (DuplicateNameException | WrongNameException e) {
+            OutputView.printErrorMessage(e.getMessage());
+            initParticipant();
         }
     }
 
-    private void initCardSetting() {
-        participants.forEach(participant -> {
-            participant.add(cards.pick());
-            participant.add(cards.pick());
-        });
+    private void addPlayers(final List<Participant> participantList) {
+        String nameInfo = InputView.readParticipantName();
+        String[] names = nameInfo.split(SEPARATOR);
+        Arrays.stream(names)
+            .forEach(name -> participantList.add(new Player(new Name(name))));
+    }
 
+    private void initCardSetting() {
+        participants.initCardSetting(cards);
         printInitCardSetting();
     }
 
     private void printInitCardSetting() {
-        OutputView.printInitCardSetting(participants);
-        OutputView.printDealerFirstCard(participants.get(DEALER_INDEX));
+        OutputView.printInitCardSetting(PlayersNameResponseDto.toDto(participants));
+        OutputView.printDealerFirstCard(toDto(participants.getDealer()));
 
-        for (int player = PLAYER_INDEX; player < participants.size(); player++) {
-            OutputView.printPlayerCards(participants.get(player));
-        }
+        participants.getPlayers()
+            .forEach(player -> OutputView.printPlayerCards(toDto(player)));
     }
 
     private void addMoreCardOfPlayers() {
         OutputView.printNextLine();
-        for (int player = PLAYER_INDEX; player < participants.size(); player++) {
-            chooseAddCard(participants.get(player));
-        }
+        participants.getPlayers()
+            .forEach(this::chooseAddCard);
     }
 
     private void chooseAddCard(final Participant player) {
-        String command = YES;
+        Command command = YES;
 
-        while ((player.canDraw() && command.equals(YES))) {
-            OutputView.printChooseAddMoreCard(player);
-            command = InputView.readAddMoreCard();
+        while (wantToAddCard(player, command)) {
+            OutputView.printChooseAddMoreCard(toDto(player));
+            command = getCommand(InputView.readAddMoreCard());
             addCard(command, player);
-            OutputView.printPlayerCards(player);
+            OutputView.printPlayerCards(toDto(player));
         }
     }
 
-    private void addCard(final String command, final Participant player) {
-        if (command.equals(YES)) {
+    private static boolean wantToAddCard(final Participant player, final Command command) {
+        return player.canDraw() && command.getStatus();
+    }
+
+    private void addCard(final Command command, final Participant player) {
+        if (command.getStatus()) {
             player.add(cards.pick());
         }
     }
 
     private void addMoreCardOfDealer() {
-        Participant dealer = participants.get(DEALER_INDEX);
+        Participant dealer = participants.getDealer();
         if (dealer.canDraw()) {
             OutputView.printAddDealerCard();
             dealer.add(cards.pick());
@@ -97,16 +108,36 @@ public class Controller {
 
     private void getParticipantsSumOfCard() {
         OutputView.printNextLine();
-        OutputView.printDealerSumOfCard(participants.get(DEALER_INDEX));
-        for (int player = PLAYER_INDEX; player < participants.size(); player++) {
-            OutputView.printPlayerSumOfCard(participants.get(player));
-        }
+        OutputView.printDealerSumOfCard(toDto(participants.getDealer()));
+
+        participants.getPlayers()
+            .forEach(player -> OutputView.printPlayerSumOfCard(toDto(player)));
     }
 
     private void result() {
-        Referee referee = new Referee();
+        referee = new Referee();
+        Participant dealer = participants.getDealer();
         OutputView.printResultMessage();
-        OutputView.printResultDealer(referee, participants);
-        OutputView.printResultPlayers(referee, participants);
+        printDealerResult(dealer);
+        printPlayersResult(dealer);
+    }
+
+    private void printDealerResult(final Participant dealer) {
+        String results = participants.getPlayers()
+            .stream()
+            .map(player -> getResult(dealer.getSumOfDeck(), player.getSumOfDeck()))
+            .collect(Collectors.joining());
+
+        OutputView.printDealerResult(results);
+    }
+
+    private void printPlayersResult(final Participant dealer) {
+        participants.getPlayers()
+            .forEach(player -> OutputView.printPlayerResult(getResult(player.getSumOfDeck(), dealer.getSumOfDeck()), toDto(player)));
+    }
+
+    private String getResult(final int firstSum, final int secondSum) {
+        return referee.compareSumOfCard(firstSum, secondSum);
     }
 }
+
