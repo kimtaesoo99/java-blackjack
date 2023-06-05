@@ -1,7 +1,7 @@
 package view;
 
-import domain.Participant;
-import domain.Referee;
+import dto.ParticipantResponseDto;
+import dto.PlayersNameResponseDto;
 
 import java.util.*;
 
@@ -22,53 +22,54 @@ public class OutputView {
     private static final String DRAW = "무";
     private static final String LOSE = "패";
     private static final String BLANK = " ";
-    private static final int PLAYER_INDEX = 1;
-    private static final int DEALER_INDEX = 0;
+    private static final String DEALER = "딜러";
     private static final int FIRST_CARD = 0;
     private static final int INIT_COUNT = 0;
     private static final int INCREASE_COUNT = 1;
 
-    public static void printInitCardSetting(final List<Participant> participants) {
+    public static void printInitCardSetting(final PlayersNameResponseDto participants) {
         StringJoiner players = new StringJoiner(SEPARATOR);
 
-        for (int player = PLAYER_INDEX; player < participants.size(); player++) {
-            players.add(participants.get(player).getName());
+        participants.getPlayersName()
+            .forEach(players::add);
+
+        System.out.println(NEXT_LINE + DEALER + AND + players + DRAW_TWO_CARD);
+    }
+
+    public static void printDealerFirstCard(final ParticipantResponseDto dealer) {
+        System.out.println(dealer.getName() + COLON + dealer.getCards().get(FIRST_CARD));
+    }
+
+    public static void printPlayerCards(final ParticipantResponseDto player) {
+        System.out.println(player.getName() + CARD + sortCards(player.getCards()));
+    }
+
+    public static void printDealerSumOfCard(final ParticipantResponseDto dealer) {
+        System.out.println(dealer.getName() + BLANK + CARD + sortCards(dealer.getCards()) + RESULT + dealer.getSum());
+    }
+
+    public static void printPlayerSumOfCard(final ParticipantResponseDto player) {
+        System.out.println(player.getName() + CARD + sortCards(player.getCards()) + RESULT + player.getSum());
+    }
+
+    private static String sortCards(final List<String> cards) {
+        StringJoiner cardNames = new StringJoiner(SEPARATOR);
+        for (String card : cards) {
+            cardNames.add(card);
         }
-
-        System.out.println(NEXT_LINE + participants.get(DEALER_INDEX).getName() + AND + players + DRAW_TWO_CARD);
-    }
-
-    public static void printDealerFirstCard(final Participant dealer) {
-        System.out.println(dealer.getName() + COLON + dealer.getCards().get(FIRST_CARD).getFullName());
-    }
-
-    public static void printPlayerCards(final Participant player) {
-        String cards = getCards(player);
-        System.out.println(player.getName() + CARD + cards);
-    }
-
-    public static void printDealerSumOfCard(final Participant dealer) {
-        String cards = getCards(dealer);
-        System.out.println(dealer.getName() + BLANK + CARD + cards + RESULT + dealer.getSumOfDeck());
-    }
-
-    public static void printPlayerSumOfCard(final Participant player) {
-        String cards = getCards(player);
-        System.out.println(player.getName() + CARD + cards + RESULT + player.getSumOfDeck());
-    }
-
-    private static String getCards(Participant player) {
-        StringJoiner cards = new StringJoiner(SEPARATOR);
-        player.getCards().forEach(card -> cards.add(card.getFullName()));
-        return cards.toString();
+        return cardNames.toString();
     }
 
     public static void printNextLine() {
         System.out.println();
     }
 
-    public static void printChooseAddMoreCard(final Participant participant) {
-        System.out.println(participant.getName() + DRAW_ONE_CARD);
+    public static void printErrorMessage(final String error) {
+        System.out.println(error);
+    }
+
+    public static void printChooseAddMoreCard(final ParticipantResponseDto player) {
+        System.out.println(player.getName() + DRAW_ONE_CARD);
     }
 
     public static void printAddDealerCard() {
@@ -79,30 +80,13 @@ public class OutputView {
         System.out.println(NEXT_LINE + FINAL_RESULT);
     }
 
-    public static void printResultPlayers(final Referee referee, final List<Participant> participants) {
-        Participant dealer = participants.get(DEALER_INDEX);
-
-        for (int players = PLAYER_INDEX; players < participants.size(); players++) {
-            Participant player = participants.get(players);
-            System.out.println(player.getName() + COLON + referee.compareSumOfCard(dealer, player));
-        }
+    public static void printPlayerResult(final String result, final ParticipantResponseDto player) {
+        System.out.println(player.getName() + COLON + result);
     }
 
-    public static void printResultDealer(final Referee referee, final List<Participant> participants) {
-        String results = getResultDealer(referee, participants);
+    public static void printDealerResult(final String results) {
         String sortedResult = getSortResult(results);
-        System.out.println(participants.get(DEALER_INDEX).getName() + COLON + sortedResult);
-    }
-
-    private static String getResultDealer(final Referee referee, final List<Participant> participants) {
-        StringBuilder results = new StringBuilder();
-        Participant dealer = participants.get(DEALER_INDEX);
-
-        for (int players = PLAYER_INDEX; players < participants.size(); players++) {
-            Participant player = participants.get(players);
-            results.append(referee.compareSumOfCard(player, dealer));
-        }
-        return results.toString();
+        System.out.println(DEALER + COLON + sortedResult);
     }
 
     private static String getSortResult(final String results) {
