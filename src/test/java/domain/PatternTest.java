@@ -2,7 +2,7 @@ package domain;
 
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class PatternTest {
 
@@ -23,8 +23,6 @@ class PatternTest {
 
     @Test
     public void findMatchPattern() {
-        //given
-
         //when
         Pattern matchedPattern = Pattern.findMatchingPattern(MATCH_NUMBER);
 

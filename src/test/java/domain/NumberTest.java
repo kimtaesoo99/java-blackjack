@@ -2,7 +2,7 @@ package domain;
 
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class NumberTest {
 
@@ -23,8 +23,6 @@ class NumberTest {
 
     @Test
     public void findMatchingNumber() {
-        //given
-
         //when
         Number matchNumber = Number.findMatchingNumber(MATCH_NUMBER);
 
