@@ -19,16 +19,14 @@ class PlayerTest {
     void beforeEach() {
         Name name = new Name(DEALER_NAME);
         player = new Player(name);
-        Card card1 = new Card(CLOVER_KING);
-        Card card2 = new Card(HEART_JACK);
+        Card card1 = Card.createWithMatchNumber(CLOVER_KING);
+        Card card2 = Card.createWithMatchNumber(HEART_JACK);
         player.add(card1);
         player.add(card2);
     }
 
     @Test
-    public void canDraw() {
-        //given
-
+    public void canDrawSuccess() {
         //when
         boolean canDraw = player.canDraw();
 
@@ -37,9 +35,9 @@ class PlayerTest {
     }
 
     @Test
-    public void cannotDraW() {
+    public void canDraWFail() {
         //given
-        Card card = new Card(HEART_TWO);
+        Card card = Card.createWithMatchNumber(HEART_TWO);
         player.add(card);
 
         //when
@@ -51,8 +49,6 @@ class PlayerTest {
 
     @Test
     public void getSumOfDeck() {
-        //given
-
         //when
         int sumOfDeck = player.getSumOfDeck();
 
