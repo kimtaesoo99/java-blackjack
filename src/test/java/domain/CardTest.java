@@ -1,20 +1,24 @@
 package domain;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class CardTest {
 
     private static final String DIAMOND_PATTERN_NAME = "다이아몬드";
     private static final String JACK_NUMBER_VALUE = "J";
-    private static final int MATCHING_NUMBER = 51;
+
+    private Card card;
+
+    @BeforeEach
+    void beforeEach() {
+        card = new Card(Pattern.DIAMOND, Number.JACK);
+    }
 
     @Test
     public void getPattern() {
-        //given
-        Card card = new Card(MATCHING_NUMBER);
-
         //when
         String patternName = card.getPattern();
 
@@ -24,9 +28,6 @@ class CardTest {
 
     @Test
     public void getNumber() {
-        //given
-        Card card = new Card(MATCHING_NUMBER);
-
         //when
         String numberValue = card.getNumber();
 
@@ -36,9 +37,6 @@ class CardTest {
 
     @Test
     public void getFullName() {
-        //given
-        Card card = new Card(MATCHING_NUMBER);
-
         //when
         String fullName = card.getFullName();
 
