@@ -1,5 +1,7 @@
 package domain;
 
+import exception.BlankNameException;
+
 public class Name {
 
     private static final String BLANK_ERROR_MESSAGE = "이름은 공백일 수 없습니다.";
@@ -15,9 +17,9 @@ public class Name {
         return name;
     }
 
-    private void validation(String name) {
+    private void validation(final String name) {
         if (name.isBlank()) {
-            throw new IllegalStateException(BLANK_ERROR_MESSAGE);
+            throw new BlankNameException(BLANK_ERROR_MESSAGE);
         }
     }
 }
