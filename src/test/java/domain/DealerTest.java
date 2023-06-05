@@ -8,8 +8,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DealerTest {
 
     private static final String DEALER = "딜러";
-    private static final int CLOVER_KING = 10;
-    private static final int HEART_JACK = 12;
     private static final int DECK_SUM = 20;
 
     private Dealer dealer;
@@ -18,14 +16,12 @@ class DealerTest {
     void beforeEach() {
         Name name = new Name(DEALER);
         dealer = new Dealer(name);
-        Card card1 = new Card(CLOVER_KING);
-        dealer.add(card1);
+        Card card = new Card(Pattern.CLOVER, Number.KING);
+        dealer.add(card);
     }
 
     @Test
-    public void canDraw() {
-        //given
-
+    public void canDrawSuccess() {
         //when
         boolean canDraw = dealer.canDraw();
 
@@ -34,9 +30,9 @@ class DealerTest {
     }
 
     @Test
-    public void cannotDraw() {
+    public void canDrawFail() {
         //given
-        Card card2 = new Card(HEART_JACK);
+        Card card2 = new Card(Pattern.HEART, Number.JACK);
         dealer.add(card2);
 
         //when
@@ -49,7 +45,7 @@ class DealerTest {
     @Test
     public void getSumOfDeck() {
         //given
-        Card card2 = new Card(HEART_JACK);
+        Card card2 = new Card(Pattern.HEART, Number.JACK);
         dealer.add(card2);
 
         //when
