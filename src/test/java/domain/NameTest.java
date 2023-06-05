@@ -1,5 +1,6 @@
 package domain;
 
+import exception.BlankNameException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -22,10 +23,8 @@ class NameTest {
 
     @Test
     public void validationBlank() {
-        //given
-
         //when, then
         Assertions.assertThatThrownBy(() -> new Name(BLANK))
-            .isInstanceOf(IllegalStateException.class);
+            .isInstanceOf(BlankNameException.class);
     }
 }
