@@ -1,5 +1,7 @@
 package view;
 
+import exception.WrongCommandException;
+
 import java.util.Scanner;
 
 public class InputView {
@@ -15,9 +17,10 @@ public class InputView {
     public static String readAddMoreCard() {
         try {
             String command = scanner.next();
-            InputValidation.addMoreCardCommand(command);
+            InputValidation.checkCorrectCommand(command);
             return command;
-        } catch (IllegalStateException e) {
+        } catch (WrongCommandException e) {
+            OutputView.printErrorMessage(e.getMessage());
             return readAddMoreCard();
         }
     }
