@@ -7,35 +7,35 @@ public class Referee {
     private static final String LOSE = "패";
     private static final int BLACK_JACK = 21;
 
-    public String compareSumOfCard(final Participant dealer, final Participant player) {
-        return compare(dealer.getSumOfDeck(), player.getSumOfDeck());
+    public String compareSumOfCard(final int firstSum, final int secondSum) {
+        return compare(firstSum, secondSum);
     }
 
-    private String compare(final int dealerSumOfDeck, final int playerSumOfDeck) {
-        if (winCase(dealerSumOfDeck, playerSumOfDeck)) {
+    private String compare(final int firstSum, final int secondSum) {
+        if (winCase(firstSum, secondSum)) {
             return WIN;
         }
-        if (drawCase(dealerSumOfDeck, playerSumOfDeck)) {
+        if (drawCase(firstSum, secondSum)) {
             return DRAW;
         }
         return LOSE;
     }
 
-    private boolean winCase(final int dealerSumOfDeck, final int playerSumOfDeck) {
-        if (dealerSumOfDeck < playerSumOfDeck && playerSumOfDeck <= BLACK_JACK) {
+    private boolean winCase(final int firstSum, final int secondSum) {
+        if (firstSum > secondSum && firstSum <= BLACK_JACK) {
             return true;
         }
-        if (dealerSumOfDeck > BLACK_JACK && playerSumOfDeck <= BLACK_JACK) {
+        if (secondSum > BLACK_JACK && firstSum <= BLACK_JACK) {
             return true;
         }
         return false;
     }
 
-    private boolean drawCase(final int dealerSumOfDeck, final int playerSumOfDeck) {
-        if (dealerSumOfDeck == playerSumOfDeck) {
+    private boolean drawCase(final int firstSum, final int secondSum) {
+        if (firstSum == secondSum) {
             return true;
         }
-        if (dealerSumOfDeck > BLACK_JACK && playerSumOfDeck > BLACK_JACK) {
+        if (firstSum > BLACK_JACK && secondSum > BLACK_JACK) {
             return true;
         }
         return false;
