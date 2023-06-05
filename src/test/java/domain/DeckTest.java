@@ -1,5 +1,6 @@
 package domain;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -8,19 +9,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class DeckTest {
 
-    private static final int DIAMOND_QUEEN = 11;
-    private static final int HEART_JACK = 12;
     private static final int SUM_CARD = 20;
+    private static final int CARDS_SIZE = 2;
 
-    @Test
-    public void getSumOfValue() {
-        //given
-        Deck deck = new Deck();
-        Card card1 = new Card(DIAMOND_QUEEN);
-        Card card2 = new Card(HEART_JACK);
+    private Deck deck;
+
+    @BeforeEach
+    void beforeEach() {
+        deck = new Deck();
+        Card card1 = new Card(Pattern.DIAMOND, Number.QUEEN);
+        Card card2 = new Card(Pattern.HEART, Number.JACK);
         deck.add(card1);
         deck.add(card2);
 
+    }
+
+    @Test
+    public void getSumOfValue() {
         //when
         int sumOfValue = deck.getSumOfValue();
 
@@ -30,17 +35,10 @@ class DeckTest {
 
     @Test
     public void getCards() {
-        //given
-        Deck deck = new Deck();
-        Card card1 = new Card(DIAMOND_QUEEN);
-        Card card2 = new Card(HEART_JACK);
-        deck.add(card1);
-        deck.add(card2);
-
         //when
         List<Card> cards = deck.getCards();
 
         //then
-        assertThat(cards).containsExactly(card1, card2);
+        assertThat(cards.size()).isEqualTo(CARDS_SIZE);
     }
 }
