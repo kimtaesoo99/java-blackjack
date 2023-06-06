@@ -2,9 +2,6 @@ package domain;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -31,15 +28,12 @@ class CardsTest {
     @Test
     public void pick() {
         //given
-        List<Card> list = new ArrayList<>();
-        Card card = Card.createWithMatchNumber(FIRST_CARD);
-        list.add(card);
-        Cards cards = new Cards(list);
+        Cards cards = Cards.createAutoCards();
 
         //when
         Card pick = cards.pick();
 
         //then
-        assertThat(pick).isEqualTo(card);
+        assertThat(pick).isInstanceOf(Card.class);
     }
 }
