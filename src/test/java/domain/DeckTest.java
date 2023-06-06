@@ -3,6 +3,7 @@ package domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,7 +17,7 @@ class DeckTest {
 
     @BeforeEach
     void beforeEach() {
-        deck = new Deck();
+        deck = new Deck(new ArrayList<>());
         Card card1 = new Card(Pattern.DIAMOND, Number.QUEEN);
         Card card2 = new Card(Pattern.HEART, Number.JACK);
         deck.add(card1);
