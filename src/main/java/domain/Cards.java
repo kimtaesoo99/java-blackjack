@@ -13,26 +13,27 @@ public class Cards {
     private final List<Card> cards;
 
     public static Cards createAutoCards() {
-        return new Cards();
+        List<Card> cards = makeShuffleCards();
+        return new Cards(cards);
     }
 
-    public Cards(final List<Card> cards) {
+    private Cards(final List<Card> cards) {
         this.cards = cards;
     }
 
-    private Cards() {
-        cards = new LinkedList<>();
-        init();
-        Collections.shuffle(cards);
-    }
-    
     public Card pick() {
         return cards.remove(TOP_CARD);
     }
 
-    private void init() {
+    private static List<Card> makeShuffleCards() {
+        List<Card> cards = new LinkedList<>();
+
         for (int number = FIRST_CARD_NUMBER; number < CARD_TOTAL_COUNT; number++) {
             cards.add(Card.createWithMatchNumber(number));
         }
+
+        Collections.shuffle(cards);
+
+        return cards;
     }
 }
