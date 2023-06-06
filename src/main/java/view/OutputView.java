@@ -3,7 +3,9 @@ package view;
 import dto.ParticipantResponseDto;
 import dto.PlayersNameResponseDto;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.StringJoiner;
 
 public class OutputView {
 
@@ -24,8 +26,6 @@ public class OutputView {
     private static final String BLANK = " ";
     private static final String DEALER = "딜러";
     private static final int FIRST_CARD = 0;
-    private static final int INIT_COUNT = 0;
-    private static final int INCREASE_COUNT = 1;
 
     public static void printInitCardSetting(final PlayersNameResponseDto participants) {
         StringJoiner players = new StringJoiner(SEPARATOR);
@@ -37,19 +37,19 @@ public class OutputView {
     }
 
     public static void printDealerFirstCard(final ParticipantResponseDto dealer) {
-        System.out.println(dealer.getName() + COLON + dealer.getCards().get(FIRST_CARD));
+        System.out.println(dealer.getName() + COLON + dealer.getCardsName().get(FIRST_CARD));
     }
 
     public static void printPlayerCards(final ParticipantResponseDto player) {
-        System.out.println(player.getName() + CARD + sortCards(player.getCards()));
+        System.out.println(player.getName() + CARD + sortCards(player.getCardsName()));
     }
 
     public static void printDealerSumOfCard(final ParticipantResponseDto dealer) {
-        System.out.println(dealer.getName() + BLANK + CARD + sortCards(dealer.getCards()) + RESULT + dealer.getSum());
+        System.out.println(dealer.getName() + BLANK + CARD + sortCards(dealer.getCardsName()) + RESULT + dealer.getSumOfCards());
     }
 
     public static void printPlayerSumOfCard(final ParticipantResponseDto player) {
-        System.out.println(player.getName() + CARD + sortCards(player.getCards()) + RESULT + player.getSum());
+        System.out.println(player.getName() + CARD + sortCards(player.getCardsName()) + RESULT + player.getSumOfCards());
     }
 
     private static String sortCards(final List<String> cards) {
@@ -90,25 +90,30 @@ public class OutputView {
     }
 
     private static String getSortResult(final String results) {
-        Map<String, Integer> resultStatus = new HashMap<>();
-        Arrays.stream(results.split(EMPTY))
-            .forEach(result -> resultStatus.put(result, resultStatus.getOrDefault(result, INIT_COUNT) + INCREASE_COUNT));
+        int winCount = getContainCount(WIN, results);
+        int drawCount = getContainCount(DRAW, results);
+        int loseCount = getContainCount(LOSE, results);
 
-        return sortResult(resultStatus);
+        return sortResult(winCount, drawCount, loseCount);
     }
 
-    private static String sortResult(Map<String, Integer> resultStatus) {
-        String sortedResult = EMPTY;
-        sortedResult += addResultStatus(resultStatus, WIN);
-        sortedResult += addResultStatus(resultStatus, DRAW);
-        sortedResult += addResultStatus(resultStatus, LOSE);
-        return sortedResult;
+    private static int getContainCount(String resultStatus, String results) {
+        return (int) Arrays.stream(results.split(EMPTY))
+            .filter(result -> result.equals(resultStatus))
+            .count();
     }
 
-    private static String addResultStatus(Map<String, Integer> resultStatus, String status) {
-        if (resultStatus.containsKey(status)) {
-            return resultStatus.get(status) + status + BLANK;
+    private static String sortResult(int winCount, int drawCount, int loseCount) {
+        StringBuilder results = new StringBuilder();
+        addResult(winCount, results, WIN);
+        addResult(drawCount, results, DRAW);
+        addResult(loseCount, results, LOSE);
+        return results.toString();
+    }
+
+    private static void addResult(int count, StringBuilder results, String result) {
+        if (count != 0) {
+            results.append(count).append(result).append(BLANK);
         }
-        return EMPTY;
     }
 }
