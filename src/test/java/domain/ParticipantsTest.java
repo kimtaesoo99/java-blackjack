@@ -1,7 +1,6 @@
 package domain;
 
 import exception.DuplicateNameException;
-import exception.WrongNameException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,11 +22,11 @@ class ParticipantsTest {
 
     @BeforeEach
     void beforeEach() {
-        List<Participant> list = new ArrayList<>();
+        List<Player> list = new ArrayList<>();
         list.add(new Player(new Name(ALICE)));
         list.add(new Player(new Name(JAKE)));
         Dealer dealer = new Dealer(new Name(DEALER));
-        participants = Participants.createDealerAndPlayers(dealer, list);
+        participants = new Participants(dealer, new Players(list));
     }
 
     @Test
@@ -61,24 +60,12 @@ class ParticipantsTest {
     public void validateDuplicate() {
         //given
         Dealer dealer = new Dealer(new Name(DEALER));
-        List<Participant> players = new ArrayList<>();
+        List<Player> players = new ArrayList<>();
         players.add(new Player(new Name(DUPLICATE_NAME)));
         players.add(new Player(new Name(DUPLICATE_NAME)));
 
         //when, then
-        Assertions.assertThatThrownBy(() -> participants = Participants.createDealerAndPlayers(dealer, players))
+        Assertions.assertThatThrownBy(() -> participants = new Participants(dealer, new Players(players)))
             .isInstanceOf(DuplicateNameException.class);
-    }
-
-    @Test
-    public void validatePlayerName() {
-        //given
-        Dealer dealer = new Dealer(new Name(DEALER));
-        List<Participant> players = new ArrayList<>();
-        players.add(new Player(new Name(DEALER)));
-
-        //when, then
-        Assertions.assertThatThrownBy(() -> participants = Participants.createDealerAndPlayers(dealer, players))
-            .isInstanceOf(WrongNameException.class);
     }
 }
