@@ -25,19 +25,13 @@ public class Referee {
         if (firstSum > secondSum && firstSum <= BLACK_JACK) {
             return true;
         }
-        if (secondSum > BLACK_JACK && firstSum <= BLACK_JACK) {
-            return true;
-        }
-        return false;
+        return secondSum > BLACK_JACK && firstSum <= BLACK_JACK;
     }
 
     private boolean drawCase(final int firstSum, final int secondSum) {
         if (firstSum == secondSum) {
             return true;
         }
-        if (firstSum > BLACK_JACK && secondSum > BLACK_JACK) {
-            return true;
-        }
-        return false;
+        return firstSum > BLACK_JACK && secondSum > BLACK_JACK;
     }
 }
