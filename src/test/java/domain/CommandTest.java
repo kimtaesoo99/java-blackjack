@@ -1,5 +1,7 @@
 package domain;
 
+import exception.WrongCommandException;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,9 +35,19 @@ class CommandTest {
         Command command = Command.YES;
 
         //when
-        boolean status = command.getStatus();
+        boolean status = command.isDraw();
 
         //then
         assertThat(status).isTrue();
+    }
+
+    @Test
+    public void wrongInputException() {
+        //given
+        String input = "a";
+
+        //when, then
+        Assertions.assertThatThrownBy(() -> Command.getCommand(input))
+            .isInstanceOf(WrongCommandException.class);
     }
 }
