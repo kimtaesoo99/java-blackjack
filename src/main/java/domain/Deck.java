@@ -1,6 +1,5 @@
 package domain;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,7 +14,11 @@ public class Deck {
     private static final int BLACK_JACK = 21;
     private static final int INIT_SUM_CARD = 0;
 
-    private final List<Card> cards = new ArrayList<>();
+    private final List<Card> cards;
+
+    public Deck(List<Card> cards) {
+        this.cards = cards;
+    }
 
     public void add(final Card card) {
         cards.add(card);
