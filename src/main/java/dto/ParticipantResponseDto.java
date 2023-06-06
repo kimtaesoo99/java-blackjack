@@ -1,38 +1,35 @@
 package dto;
 
-import domain.Card;
 import domain.Participant;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ParticipantResponseDto {
 
-    private final List<Card> cards;
+    private final List<String> cardsName;
     private final String name;
-    private final int sum;
+    private final int sumOfCards;
 
-    public ParticipantResponseDto(List<Card> cards, String name, int sum) {
+    public ParticipantResponseDto(final List<String> cardsName, final String name, final int sumOfCards) {
         this.name = name;
-        this.sum = sum;
-        this.cards = cards;
+        this.sumOfCards = sumOfCards;
+        this.cardsName = cardsName;
     }
 
-    public List<String> getCards() {
-        return cards.stream()
-            .map(Card::getFullName)
-            .collect(Collectors.toList());
+    public List<String> getCardsName() {
+        return Collections.unmodifiableList(cardsName);
     }
 
     public String getName() {
         return name;
     }
 
-    public int getSum() {
-        return sum;
+    public int getSumOfCards() {
+        return sumOfCards;
     }
 
-    public static ParticipantResponseDto toDto(Participant participant) {
-        return new ParticipantResponseDto(participant.getCards(), participant.getName(), participant.getSumOfDeck());
+    public static ParticipantResponseDto toDto(final Participant participant) {
+        return new ParticipantResponseDto(participant.getCardsName(), participant.getName(), participant.getSumOfDeck());
     }
 }
