@@ -31,7 +31,7 @@ public enum Command {
             .orElseThrow(() -> new WrongCommandException(COMMAND_ERROR_MESSAGE));
     }
 
-    public boolean getStatus() {
+    public boolean isDraw() {
         return status;
     }
 }
