@@ -9,7 +9,7 @@ public class PlayersNameResponseDto {
 
     private final List<String> playersName;
 
-    public PlayersNameResponseDto(List<String> playersName) {
+    public PlayersNameResponseDto(final List<String> playersName) {
         this.playersName = playersName;
     }
 
@@ -17,7 +17,7 @@ public class PlayersNameResponseDto {
         return Collections.unmodifiableList(playersName);
     }
 
-    public static PlayersNameResponseDto toDto(Participants participants) {
+    public static PlayersNameResponseDto toDto(final Participants participants) {
         return new PlayersNameResponseDto(participants.getPlayersName());
     }
 }
