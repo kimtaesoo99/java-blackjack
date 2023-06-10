@@ -17,15 +17,18 @@ class ParticipantsTest {
     private static final String JAKE = "Jake";
     private static final String DUPLICATE_NAME = "A";
     private static final int PLAYER_SIZE = 2;
+    private static final int INIT_AMOUNT = 0;
+
 
     private Participants participants;
 
     @BeforeEach
     void beforeEach() {
+        Amount amount = new Amount(INIT_AMOUNT);
         List<Player> list = new ArrayList<>();
-        list.add(new Player(new Name(ALICE)));
-        list.add(new Player(new Name(JAKE)));
-        Dealer dealer = new Dealer(new Name(DEALER));
+        list.add(new Player(new Name(ALICE), amount));
+        list.add(new Player(new Name(JAKE), amount));
+        Dealer dealer = new Dealer(new Name(DEALER), amount);
         participants = new Participants(dealer, new Players(list));
     }
 
@@ -50,7 +53,7 @@ class ParticipantsTest {
     @Test
     void getPlayers() {
         //when
-        List<Participant> players = participants.getPlayers();
+        List<Player> players = participants.getPlayers();
 
         //then
         assertThat(players.size()).isEqualTo(PLAYER_SIZE);
@@ -59,10 +62,11 @@ class ParticipantsTest {
     @Test
     public void validateDuplicate() {
         //given
-        Dealer dealer = new Dealer(new Name(DEALER));
+        Amount amount = new Amount(INIT_AMOUNT);
+        Dealer dealer = new Dealer(new Name(DEALER), amount);
         List<Player> players = new ArrayList<>();
-        players.add(new Player(new Name(DUPLICATE_NAME)));
-        players.add(new Player(new Name(DUPLICATE_NAME)));
+        players.add(new Player(new Name(DUPLICATE_NAME), amount));
+        players.add(new Player(new Name(DUPLICATE_NAME), amount));
 
         //when, then
         Assertions.assertThatThrownBy(() -> participants = new Participants(dealer, new Players(players)))
