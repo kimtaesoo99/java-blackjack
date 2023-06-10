@@ -12,13 +12,15 @@ class PlayerTest {
     private static final int HEART_JACK = 12;
     private static final int HEART_TWO = 1;
     private static final int DECK_SUM = 20;
+    private static final int INIT_AMOUNT = 0;
 
     private Player player;
 
     @BeforeEach
     void beforeEach() {
         Name name = new Name(DEALER_NAME);
-        player = new Player(name);
+        Amount amount = new Amount(INIT_AMOUNT);
+        player = new Player(name, amount);
         Card card1 = Card.createWithMatchNumber(CLOVER_KING);
         Card card2 = Card.createWithMatchNumber(HEART_JACK);
         player.add(card1);
