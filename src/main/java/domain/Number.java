@@ -34,7 +34,7 @@ public enum Number {
     public static Number findMatchingNumber(final int matchNumber) {
         return Arrays.stream(Number.values())
             .filter(number -> isMatchingNumber(matchNumber, number))
-            .findFirst()
+            .findAny()
             .orElseThrow(() -> new WrongMatchNumberException(NUMBER_ERROR_MESSAGE));
     }
 
