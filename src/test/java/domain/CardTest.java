@@ -7,14 +7,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CardTest {
 
-    private static final String DIAMOND_PATTERN_NAME = "다이아몬드";
+    private static final String CLOVER_PATTERN_NAME = "클로버";
     private static final String JACK_NUMBER_VALUE = "J";
+    private static final int CLOVER_JACK = 38;
 
     private Card card;
 
     @BeforeEach
     void beforeEach() {
-        card = new Card(Pattern.DIAMOND, Number.JACK);
+        card = Card.createWithMatchNumber(CLOVER_JACK);
     }
 
     @Test
@@ -23,7 +24,7 @@ class CardTest {
         String patternName = card.getPattern();
 
         //then
-        assertThat(patternName).isEqualTo(DIAMOND_PATTERN_NAME);
+        assertThat(patternName).isEqualTo(CLOVER_PATTERN_NAME);
     }
 
     @Test
@@ -41,6 +42,6 @@ class CardTest {
         String fullName = card.getFullName();
 
         //when
-        assertThat(fullName).isEqualTo(JACK_NUMBER_VALUE + DIAMOND_PATTERN_NAME);
+        assertThat(fullName).isEqualTo(JACK_NUMBER_VALUE + CLOVER_PATTERN_NAME);
     }
 }

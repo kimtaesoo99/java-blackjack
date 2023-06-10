@@ -12,14 +12,16 @@ class DeckTest {
 
     private static final int SUM_CARD = 20;
     private static final int CARDS_SIZE = 2;
+    private static final int CLOVER_JACK = 38;
+    private static final int SPADE_JACK = 25;
 
     private Deck deck;
 
     @BeforeEach
     void beforeEach() {
         deck = new Deck(new ArrayList<>());
-        Card card1 = new Card(Pattern.DIAMOND, Number.QUEEN);
-        Card card2 = new Card(Pattern.HEART, Number.JACK);
+        Card card1 = Card.createWithMatchNumber(CLOVER_JACK);
+        Card card2 = Card.createWithMatchNumber(SPADE_JACK);
         deck.add(card1);
         deck.add(card2);
 
