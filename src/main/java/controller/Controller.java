@@ -1,8 +1,11 @@
 package controller;
 
 import domain.*;
-import dto.ParticipantResponseDto;
-import dto.PlayersNameResponseDto;
+import dto.DealerAmountResponse;
+import dto.ParticipantResponse;
+import dto.PlayerAmountResponse;
+import dto.PlayersNameResponse;
+import exception.AmountException;
 import exception.BlankNameException;
 import exception.DuplicateNameException;
 import view.InputView;
@@ -11,7 +14,6 @@ import view.OutputView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static domain.Command.YES;
 import static domain.Command.getCommand;
@@ -20,13 +22,14 @@ public class Controller {
 
     private static final String DEALER = "딜러";
     private static final String SEPARATOR = ",";
+    private static final int INIT_AMOUNT = 0;
 
     private Cards cards;
     private Participants participants;
     private Referee referee;
 
     public void start() {
-        initCards();
+        initSetting();
         initParticipants();
         initCardSetting();
         addMoreCardOfPlayers();
@@ -35,14 +38,15 @@ public class Controller {
         result();
     }
 
-    private void initCards() {
+    private void initSetting() {
+        referee = new Referee();
         cards = Cards.createAutoCards();
     }
 
     private void initParticipants() {
         List<Player> players = new ArrayList<>();
         try {
-            Dealer dealer = new Dealer(new Name(DEALER));
+            Dealer dealer = new Dealer(new Name(DEALER), new Amount(INIT_AMOUNT));
             addPlayers(players);
             participants = new Participants(dealer, new Players(players));
         } catch (DuplicateNameException | BlankNameException e) {
@@ -55,20 +59,36 @@ public class Controller {
         String nameInfo = InputView.readParticipantName();
         String[] names = nameInfo.split(SEPARATOR);
         Arrays.stream(names)
-            .forEach(name -> players.add(new Player(new Name(name))));
+            .forEach(name -> players.add(new Player(new Name(name), setPlayerBetAmount(name))));
+    }
+
+    private Amount setPlayerBetAmount(final String playerName) {
+        try {
+            OutputView.printBetAmount(playerName);
+            return new Amount(InputView.readBetAmount());
+        } catch (AmountException e) {
+            OutputView.printErrorMessage(e.getMessage());
+            return setPlayerBetAmount(playerName);
+        }
     }
 
     private void initCardSetting() {
         participants.initCardSetting(cards);
+
+        participants.getPlayers()
+            .stream()
+            .filter(player -> referee.checkBlackJack(player.getSumOfDeck()))
+            .forEach(Player::multiplyAmount);
+
         printInitCardSetting();
     }
 
     private void printInitCardSetting() {
-        OutputView.printInitCardSetting(PlayersNameResponseDto.toDto(participants));
-        OutputView.printDealerFirstCard(ParticipantResponseDto.toDto((participants.getDealer())));
+        OutputView.printInitCardSetting(PlayersNameResponse.toDto(participants));
+        OutputView.printDealerFirstCard(ParticipantResponse.toDto((participants.getDealer())));
 
         participants.getPlayers()
-            .forEach(player -> OutputView.printPlayerCards(ParticipantResponseDto.toDto(player)));
+            .forEach(player -> OutputView.printPlayerCards(ParticipantResponse.toDto(player)));
     }
 
     private void addMoreCardOfPlayers() {
@@ -81,10 +101,10 @@ public class Controller {
         Command command = YES;
 
         while (canAddCard(player, command)) {
-            OutputView.printChooseAddMoreCard(ParticipantResponseDto.toDto(player));
+            OutputView.printChooseAddMoreCard(ParticipantResponse.toDto(player));
             command = getCommand(InputView.readAddMoreCard());
             addCard(command, player);
-            OutputView.printPlayerCards(ParticipantResponseDto.toDto(player));
+            OutputView.printPlayerCards(ParticipantResponse.toDto(player));
         }
     }
 
@@ -108,37 +128,37 @@ public class Controller {
 
     private void getParticipantsSumOfCard() {
         OutputView.printNextLine();
-        OutputView.printDealerSumOfCard(ParticipantResponseDto.toDto(participants.getDealer()));
+        OutputView.printDealerSumOfCard(ParticipantResponse.toDto(participants.getDealer()));
 
         participants.getPlayers()
-            .forEach(player -> OutputView.printPlayerSumOfCard(ParticipantResponseDto.toDto(player)));
+            .forEach(player -> OutputView.printPlayerSumOfCard(ParticipantResponse.toDto(player)));
     }
 
     private void result() {
-        referee = new Referee();
-        Participant dealer = participants.getDealer();
+        Dealer dealer = participants.getDealer();
+
         OutputView.printResultMessage();
+        setRevenue(dealer);
         printDealerResult(dealer);
-        printPlayersResult(dealer);
+        printPlayersResult();
     }
 
-    private void printDealerResult(final Participant dealer) {
-        String results = participants.getPlayers()
-            .stream()
-            .map(player -> getResult(dealer.getSumOfDeck(), player.getSumOfDeck()))
-            .collect(Collectors.joining());
-
-        OutputView.printDealerResult(results);
-    }
-
-    private void printPlayersResult(final Participant dealer) {
+    private void setRevenue(final Dealer dealer) {
         participants.getPlayers()
-            .forEach(player -> OutputView.printPlayerResult(getResult(player.getSumOfDeck(), dealer.getSumOfDeck()),
-                ParticipantResponseDto.toDto(player)));
+            .forEach(player -> referee.distributeRevenue(getResult(player, dealer), player, dealer));
     }
 
-    private String getResult(final int firstSum, final int secondSum) {
-        return referee.compareSumOfCard(firstSum, secondSum);
+    private String getResult(final Player player, final Dealer dealer) {
+        return referee.compareSumOfCard(player.getSumOfDeck(), dealer.getSumOfDeck());
+    }
+
+    private void printDealerResult(final Dealer dealer) {
+        OutputView.printDealerResult(DealerAmountResponse.toDto(dealer));
+    }
+
+    private void printPlayersResult() {
+        participants.getPlayers()
+            .forEach(player -> OutputView.printPlayerResult(PlayerAmountResponse.toDto(player)));
     }
 }
 
