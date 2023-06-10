@@ -6,15 +6,13 @@ public class Card {
     private final Number number;
 
     public static Card createWithMatchNumber(final int matchingNumber) {
-        return new Card(matchingNumber);
+        Pattern pattern = Pattern.findMatchingPattern(matchingNumber);
+        Number number = Number.findMatchingNumber(matchingNumber);
+
+        return new Card(pattern, number);
     }
 
-    private Card(final int matchingNumber) {
-        this.pattern = Pattern.findMatchingPattern(matchingNumber);
-        this.number = Number.findMatchingNumber(matchingNumber);
-    }
-
-    public Card(final Pattern pattern, final Number number) {
+    private Card(final Pattern pattern, final Number number) {
         this.pattern = pattern;
         this.number = number;
     }
