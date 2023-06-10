@@ -1,6 +1,6 @@
 package domain;
 
-import exception.BetAmountException;
+import exception.AmountException;
 
 import java.util.Objects;
 
@@ -34,7 +34,7 @@ public class Amount {
 
     private void validation(final int amount) {
         if (amount < STANDARD) {
-            throw new BetAmountException(AMOUNT_ERROR_MESSAGE);
+            throw new AmountException(AMOUNT_ERROR_MESSAGE);
         }
     }
 
