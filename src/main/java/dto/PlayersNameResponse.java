@@ -5,11 +5,11 @@ import domain.Participants;
 import java.util.Collections;
 import java.util.List;
 
-public class PlayersNameResponseDto {
+public class PlayersNameResponse {
 
     private final List<String> playersName;
 
-    public PlayersNameResponseDto(final List<String> playersName) {
+    public PlayersNameResponse(final List<String> playersName) {
         this.playersName = playersName;
     }
 
@@ -17,7 +17,7 @@ public class PlayersNameResponseDto {
         return Collections.unmodifiableList(playersName);
     }
 
-    public static PlayersNameResponseDto toDto(final Participants participants) {
-        return new PlayersNameResponseDto(participants.getPlayersName());
+    public static PlayersNameResponse toDto(final Participants participants) {
+        return new PlayersNameResponse(participants.getPlayersName());
     }
 }
