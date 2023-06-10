@@ -35,7 +35,7 @@ public class Deck {
         }
 
         if (hasAce()) {
-            return tempAceOfValue(sumOfCard);
+            return changeAceOfValue(sumOfCard);
         }
         return sumOfCard;
     }
@@ -58,7 +58,7 @@ public class Deck {
         return number.equals(ACE);
     }
 
-    private int tempAceOfValue(final int sumOfCard) {
+    private int changeAceOfValue(final int sumOfCard) {
         if (sumOfCard + SPECIAL_CARD_VALUE <= BLACK_JACK) {
             return sumOfCard + SPECIAL_CARD_VALUE;
         }
