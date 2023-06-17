@@ -12,17 +12,13 @@ public class Cards {
 
     private final List<Card> cards;
 
-    public static Cards createAutoCards() {
-        List<Card> cards = makeShuffleCards();
-        return new Cards(cards);
-    }
-
     private Cards(final List<Card> cards) {
         this.cards = cards;
     }
 
-    public Card pick() {
-        return cards.remove(TOP_CARD);
+    public static Cards createAutoCards() {
+        List<Card> cards = makeShuffleCards();
+        return new Cards(cards);
     }
 
     private static List<Card> makeShuffleCards() {
@@ -35,5 +31,9 @@ public class Cards {
         Collections.shuffle(cards);
 
         return cards;
+    }
+
+    public Card pick() {
+        return cards.remove(TOP_CARD);
     }
 }
