@@ -1,8 +1,10 @@
 package domain;
 
 import exception.BlankNameException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class NameTest {
 
@@ -18,13 +20,26 @@ class NameTest {
         String AliceName = name.getName();
 
         //then
-        Assertions.assertThat(AliceName).isEqualTo(NAME);
+        assertThat(AliceName).isEqualTo(NAME);
     }
 
     @Test
     public void validationBlank() {
         //when, then
-        Assertions.assertThatThrownBy(() -> new Name(BLANK))
+        assertThatThrownBy(() -> new Name(BLANK))
             .isInstanceOf(BlankNameException.class);
+    }
+
+    @Test
+    public void equals() {
+        //given
+        Name name1 = new Name(NAME);
+        Name name2 = new Name(NAME);
+
+        //when
+        boolean correct = name1.equals(name2);
+
+        //then
+        assertThat(correct).isTrue();
     }
 }

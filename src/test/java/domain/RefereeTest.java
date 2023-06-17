@@ -11,8 +11,6 @@ class RefereeTest {
     private static final String DRAW = "무";
     private static final String LOSE = "패";
     private static final int INIT_AMOUNT = 100;
-    private static final int MINUS_AMOUNT = -100;
-    private static final int DOUBLE_AMOUNT = 200;
     private static final int CLOVER_JACK = 38;
     private static final int SPADE_JACK = 25;
     private static final int HEART_ACE = 0;
@@ -22,8 +20,8 @@ class RefereeTest {
     public void compareSumOfCardDealerWin() {
         //given
         Referee referee = new Referee();
-        Dealer dealer = new Dealer(new Name(DEALER), new Amount(INIT_AMOUNT));
-        Player player = new Player(new Name(PLAYER), new Amount(INIT_AMOUNT));
+        Dealer dealer = Dealer.create(new Account(new Name(DEALER), new Amount(INIT_AMOUNT)));
+        Player player = Player.create(new Account(new Name(PLAYER), new Amount(INIT_AMOUNT)));
         dealer.add(Card.createWithMatchNumber(CLOVER_JACK));
         player.add(Card.createWithMatchNumber(SPADE_JACK));
 
@@ -38,8 +36,8 @@ class RefereeTest {
     public void compareSumOfCardDealerLose() {
         //given
         Referee referee = new Referee();
-        Dealer dealer = new Dealer(new Name(DEALER), new Amount(INIT_AMOUNT));
-        Player player = new Player(new Name(PLAYER), new Amount(INIT_AMOUNT));
+        Dealer dealer = Dealer.create(new Account(new Name(DEALER), new Amount(INIT_AMOUNT)));
+        Player player = Player.create(new Account(new Name(PLAYER), new Amount(INIT_AMOUNT)));
         dealer.add(Card.createWithMatchNumber(CLOVER_JACK));
         player.add(Card.createWithMatchNumber(HEART_ACE));
 
@@ -60,20 +58,5 @@ class RefereeTest {
 
         //then
         assertThat(blackJack).isTrue();
-    }
-
-    @Test
-    public void distributeRevenue() {
-        //given
-        Referee referee = new Referee();
-        Dealer dealer = new Dealer(new Name(DEALER), new Amount(INIT_AMOUNT));
-        Player player = new Player(new Name(PLAYER), new Amount(INIT_AMOUNT));
-
-        //when
-        referee.distributeRevenue(LOSE, player, dealer);
-
-        //then
-        assertThat(player.getAmount()).isEqualTo(MINUS_AMOUNT);
-        assertThat(dealer.getAmount()).isEqualTo(DOUBLE_AMOUNT);
     }
 }

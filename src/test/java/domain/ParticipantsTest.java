@@ -18,17 +18,19 @@ class ParticipantsTest {
     private static final String DUPLICATE_NAME = "A";
     private static final int PLAYER_SIZE = 2;
     private static final int INIT_AMOUNT = 0;
+    private static final int INIT_CARD_SIZE = 2;
 
 
     private Participants participants;
+    private Dealer dealer;
 
     @BeforeEach
     void beforeEach() {
         Amount amount = new Amount(INIT_AMOUNT);
         List<Player> list = new ArrayList<>();
-        list.add(new Player(new Name(ALICE), amount));
-        list.add(new Player(new Name(JAKE), amount));
-        Dealer dealer = new Dealer(new Name(DEALER), amount);
+        list.add(Player.create(new Account(new Name(ALICE), amount)));
+        list.add(Player.create(new Account(new Name(JAKE), amount)));
+        dealer = Dealer.create(new Account(new Name(DEALER), amount));
         participants = new Participants(dealer, new Players(list));
     }
 
@@ -63,13 +65,22 @@ class ParticipantsTest {
     public void validateDuplicate() {
         //given
         Amount amount = new Amount(INIT_AMOUNT);
-        Dealer dealer = new Dealer(new Name(DEALER), amount);
+        Dealer dealer = Dealer.create(new Account(new Name(DEALER), amount));
         List<Player> players = new ArrayList<>();
-        players.add(new Player(new Name(DUPLICATE_NAME), amount));
-        players.add(new Player(new Name(DUPLICATE_NAME), amount));
+        players.add(Player.create(new Account(new Name(DUPLICATE_NAME), amount)));
+        players.add(Player.create(new Account(new Name(DUPLICATE_NAME), amount)));
 
         //when, then
         Assertions.assertThatThrownBy(() -> participants = new Participants(dealer, new Players(players)))
             .isInstanceOf(DuplicateNameException.class);
+    }
+
+    @Test
+    public void initCardSetting() {
+        //when
+        participants.initCardSetting(Cards.createAutoCards());
+
+        //then
+        assertThat(dealer.getCardsName().size()).isEqualTo(INIT_CARD_SIZE);
     }
 }
