@@ -1,6 +1,16 @@
 package controller;
 
-import domain.*;
+import domain.Account;
+import domain.Amount;
+import domain.Cards;
+import domain.Command;
+import domain.Dealer;
+import domain.Name;
+import domain.Participant;
+import domain.Participants;
+import domain.Player;
+import domain.Players;
+import domain.Referee;
 import dto.DealerAmountResponse;
 import dto.ParticipantResponse;
 import dto.PlayerAmountResponse;
@@ -23,6 +33,10 @@ public class Controller {
     private static final String DEALER = "딜러";
     private static final String SEPARATOR = ",";
     private static final int INIT_AMOUNT = 0;
+    private static final double MULTIPLE = 1.5;
+    private static final String WIN = "승";
+    private static final String DRAW = "무";
+    private static final String LOSE = "패";
 
     private Cards cards;
     private Participants participants;
@@ -46,7 +60,7 @@ public class Controller {
     private void initParticipants() {
         List<Player> players = new ArrayList<>();
         try {
-            Dealer dealer = new Dealer(new Name(DEALER), new Amount(INIT_AMOUNT));
+            Dealer dealer = Dealer.create(new Account(new Name(DEALER), new Amount(INIT_AMOUNT)));
             addPlayers(players);
             participants = new Participants(dealer, new Players(players));
         } catch (DuplicateNameException | BlankNameException e) {
@@ -59,7 +73,7 @@ public class Controller {
         String nameInfo = InputView.readParticipantName();
         String[] names = nameInfo.split(SEPARATOR);
         Arrays.stream(names)
-            .forEach(name -> players.add(new Player(new Name(name), setPlayerBetAmount(name))));
+            .forEach(name -> players.add(Player.create(new Account(new Name(name), setPlayerBetAmount(name)))));
     }
 
     private Amount setPlayerBetAmount(final String playerName) {
@@ -78,7 +92,7 @@ public class Controller {
         participants.getPlayers()
             .stream()
             .filter(player -> referee.checkBlackJack(player.getSumOfDeck()))
-            .forEach(Player::multiplyAmount);
+            .forEach(player -> player.multiplyAmount(MULTIPLE));
 
         printInitCardSetting();
     }
@@ -145,11 +159,36 @@ public class Controller {
 
     private void setRevenue(final Dealer dealer) {
         participants.getPlayers()
-            .forEach(player -> referee.distributeRevenue(getResult(player, dealer), player, dealer));
+            .forEach(player -> distributeRevenue(getResult(player, dealer), player, dealer));
     }
 
     private String getResult(final Player player, final Dealer dealer) {
         return referee.compareSumOfCard(player.getSumOfDeck(), dealer.getSumOfDeck());
+    }
+
+    private void distributeRevenue(final String result, final Player player, final Dealer dealer) {
+        distributeWinCase(result, player, dealer);
+        distributeDrawCase(result, player);
+        distributeLoseCase(result, player, dealer);
+    }
+
+    private void distributeWinCase(final String result, final Player player, final Dealer dealer) {
+        if (result.equals(WIN)) {
+            dealer.loseGame(player.getAmount());
+        }
+    }
+
+    private void distributeDrawCase(final String result, final Player player) {
+        if (result.equals(DRAW)) {
+            player.drawGame();
+        }
+    }
+
+    private void distributeLoseCase(final String result, final Player player, final Dealer dealer) {
+        if (result.equals(LOSE)) {
+            dealer.winGame(player.getAmount());
+            player.loseGame();
+        }
     }
 
     private void printDealerResult(final Dealer dealer) {
