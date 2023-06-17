@@ -8,6 +8,8 @@ public class Amount {
 
     private static final String AMOUNT_ERROR_MESSAGE = "1이상의 수여야 합니다.";
     private static final int STANDARD = 0;
+    private static final int EMPTY_AMOUNT = 0;
+    private static final int MINUS = -1;
 
     private int amount;
 
@@ -16,26 +18,34 @@ public class Amount {
         this.amount = amount;
     }
 
-    public void setAmount(final int amount) {
-        this.amount = amount;
-    }
-
-    public int getAmount() {
-        return amount;
-    }
-
-    public void multiply(final double number) {
-        amount *= number;
+    private void validation(final int amount) {
+        if (amount < STANDARD) {
+            throw new AmountException(AMOUNT_ERROR_MESSAGE);
+        }
     }
 
     public void add(final int amount) {
         this.amount += amount;
     }
 
-    private void validation(final int amount) {
-        if (amount < STANDARD) {
-            throw new AmountException(AMOUNT_ERROR_MESSAGE);
-        }
+    public void subtract(final int amount) {
+        this.amount -= amount;
+    }
+
+    public void init() {
+        this.amount = EMPTY_AMOUNT;
+    }
+
+    public void multiply(final double multiple) {
+        this.amount *= multiple;
+    }
+
+    public void reverse() {
+        this.amount *= MINUS;
+    }
+
+    public int getAmount() {
+        return amount;
     }
 
     @Override
