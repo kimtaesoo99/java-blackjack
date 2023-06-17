@@ -24,10 +24,6 @@ public class Deck {
         cards.add(card);
     }
 
-    public List<Card> getCards() {
-        return Collections.unmodifiableList(cards);
-    }
-
     public int getSumOfValue() {
         int sumOfCard = INIT_SUM_CARD;
         for (final Card card : cards) {
@@ -68,5 +64,9 @@ public class Deck {
     private boolean hasAce() {
         return cards.stream()
             .anyMatch(card -> isAceCard(card.getNumber()));
+    }
+
+    public List<Card> getCards() {
+        return Collections.unmodifiableList(cards);
     }
 }

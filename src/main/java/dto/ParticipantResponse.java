@@ -11,10 +11,14 @@ public class ParticipantResponse {
     private final String name;
     private final int sumOfCards;
 
-    public ParticipantResponse(final List<String> cardsName, final String name, final int sumOfCards) {
+    private ParticipantResponse(final List<String> cardsName, final String name, final int sumOfCards) {
         this.name = name;
         this.sumOfCards = sumOfCards;
         this.cardsName = cardsName;
+    }
+
+    public static ParticipantResponse toDto(final Participant participant) {
+        return new ParticipantResponse(participant.getCardsName(), participant.getName(), participant.getSumOfDeck());
     }
 
     public List<String> getCardsName() {
@@ -27,9 +31,5 @@ public class ParticipantResponse {
 
     public int getSumOfCards() {
         return sumOfCards;
-    }
-
-    public static ParticipantResponse toDto(final Participant participant) {
-        return new ParticipantResponse(participant.getCardsName(), participant.getName(), participant.getSumOfDeck());
     }
 }

@@ -7,9 +7,13 @@ public class DealerAmountResponse {
     private final String name;
     private final int betAmount;
 
-    public DealerAmountResponse(String name, int betAmount) {
+    private DealerAmountResponse(final String name, final int betAmount) {
         this.name = name;
         this.betAmount = betAmount;
+    }
+
+    public static DealerAmountResponse toDto(final Dealer dealer) {
+        return new DealerAmountResponse(dealer.getName(), dealer.getAmount());
     }
 
     public String getName() {
@@ -18,9 +22,5 @@ public class DealerAmountResponse {
 
     public int getBetAmount() {
         return betAmount;
-    }
-
-    public static DealerAmountResponse toDto(final Dealer dealer) {
-        return new DealerAmountResponse(dealer.getName(), dealer.getAmount());
     }
 }
