@@ -1,19 +1,18 @@
 package domain;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public abstract class Participant {
 
-    private final Name name;
+    protected final Account account;
+
     private final Deck deck;
 
-    public Participant(final Name name) {
-        this.name = name;
-        List<Card> emptyCards = new ArrayList<>();
-        this.deck = new Deck(emptyCards);
+    public Participant(final Account account, final Deck deck) {
+        this.account = account;
+        this.deck = deck;
     }
 
     public int getSumOfDeck() {
@@ -30,7 +29,7 @@ public abstract class Participant {
     }
 
     public String getName() {
-        return name.getName();
+        return account.getName();
     }
 
     public List<String> getCardsName() {
@@ -39,6 +38,10 @@ public abstract class Participant {
             .forEach(card -> names.add(card.getFullName()));
 
         return Collections.unmodifiableList(names);
+    }
+
+    public int getAmount() {
+        return account.getAmount();
     }
 
     public abstract boolean canDraw();
