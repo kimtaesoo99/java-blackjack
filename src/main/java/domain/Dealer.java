@@ -1,22 +1,29 @@
 package domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Dealer extends Participant {
 
     private static final int DRAW_STANDARD = 16;
 
-    private Amount amount;
-
-    public Dealer(final Name name, final Amount amount) {
-        super(name);
-        this.amount = amount;
+    private Dealer(final Account account, final Deck deck) {
+        super(account, deck);
     }
 
-    public void addAmount(int amount) {
-        this.amount.add(amount);
+    public static Dealer create(final Account account) {
+        List<Card> emptyCards = new ArrayList<>();
+        Deck deck = new Deck(emptyCards);
+
+        return new Dealer(account, deck);
     }
 
-    public int getAmount() {
-        return amount.getAmount();
+    public void winGame(final int amount) {
+        this.account.add(amount);
+    }
+
+    public void loseGame(final int amount) {
+        this.account.subtract(amount);
     }
 
     @Override

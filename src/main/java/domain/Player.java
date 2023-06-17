@@ -1,27 +1,33 @@
 package domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Player extends Participant {
 
     private static final int DRAW_STANDARD = 21;
-    private static final double MULTIPLY_NUMBER = 1.5;
 
-    private final Amount amount;
-
-    public Player(final Name name, final Amount amount) {
-        super(name);
-        this.amount = amount;
+    private Player(final Account account, final Deck deck) {
+        super(account, deck);
     }
 
-    public void multiplyAmount() {
-        amount.multiply(MULTIPLY_NUMBER);
+    public static Player create(final Account account) {
+        List<Card> emptyCards = new ArrayList<>();
+        Deck deck = new Deck(emptyCards);
+
+        return new Player(account, deck);
     }
 
-    public void setAmount(final int betAmount) {
-        this.amount.setAmount(betAmount);
+    public void multiplyAmount(final double multiple) {
+        this.account.multiply(multiple);
     }
 
-    public int getAmount() {
-        return amount.getAmount();
+    public void loseGame() {
+        this.account.reverseAmount();
+    }
+
+    public void drawGame() {
+        this.account.initAmount();
     }
 
     @Override
