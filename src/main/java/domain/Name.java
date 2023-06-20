@@ -15,14 +15,14 @@ public class Name {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
-
     private void validation(final String name) {
         if (name.isBlank()) {
             throw new BlankNameException(BLANK_ERROR_MESSAGE);
         }
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override

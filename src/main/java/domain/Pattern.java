@@ -25,7 +25,7 @@ public enum Pattern {
     public static Pattern findMatchingPattern(final int matchNumber) {
         return Arrays.stream(Pattern.values())
             .filter(pattern -> isMatchingPattern(matchNumber, pattern))
-            .findFirst()
+            .findAny()
             .orElseThrow(() -> new WrongMatchNumberException(NUMBER_ERROR_MESSAGE));
     }
 

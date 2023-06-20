@@ -18,7 +18,7 @@ public class Participants {
         players.initCardSetting(cards);
     }
 
-    public Participant getDealer() {
+    public Dealer getDealer() {
         return dealer;
     }
 
@@ -26,7 +26,7 @@ public class Participants {
         return Collections.unmodifiableList(players.getPlayersName());
     }
 
-    public List<Participant> getPlayers() {
+    public List<Player> getPlayers() {
         return Collections.unmodifiableList(players.getPlayers());
     }
 }

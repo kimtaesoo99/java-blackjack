@@ -17,15 +17,20 @@ class ParticipantsTest {
     private static final String JAKE = "Jake";
     private static final String DUPLICATE_NAME = "A";
     private static final int PLAYER_SIZE = 2;
+    private static final int INIT_AMOUNT = 0;
+    private static final int INIT_CARD_SIZE = 2;
+
 
     private Participants participants;
+    private Dealer dealer;
 
     @BeforeEach
     void beforeEach() {
+        Amount amount = new Amount(INIT_AMOUNT);
         List<Player> list = new ArrayList<>();
-        list.add(new Player(new Name(ALICE)));
-        list.add(new Player(new Name(JAKE)));
-        Dealer dealer = new Dealer(new Name(DEALER));
+        list.add(Player.create(new Account(new Name(ALICE), amount)));
+        list.add(Player.create(new Account(new Name(JAKE), amount)));
+        dealer = Dealer.create(new Account(new Name(DEALER), amount));
         participants = new Participants(dealer, new Players(list));
     }
 
@@ -50,7 +55,7 @@ class ParticipantsTest {
     @Test
     void getPlayers() {
         //when
-        List<Participant> players = participants.getPlayers();
+        List<Player> players = participants.getPlayers();
 
         //then
         assertThat(players.size()).isEqualTo(PLAYER_SIZE);
@@ -59,13 +64,23 @@ class ParticipantsTest {
     @Test
     public void validateDuplicate() {
         //given
-        Dealer dealer = new Dealer(new Name(DEALER));
+        Amount amount = new Amount(INIT_AMOUNT);
+        Dealer dealer = Dealer.create(new Account(new Name(DEALER), amount));
         List<Player> players = new ArrayList<>();
-        players.add(new Player(new Name(DUPLICATE_NAME)));
-        players.add(new Player(new Name(DUPLICATE_NAME)));
+        players.add(Player.create(new Account(new Name(DUPLICATE_NAME), amount)));
+        players.add(Player.create(new Account(new Name(DUPLICATE_NAME), amount)));
 
         //when, then
         Assertions.assertThatThrownBy(() -> participants = new Participants(dealer, new Players(players)))
             .isInstanceOf(DuplicateNameException.class);
+    }
+
+    @Test
+    public void initCardSetting() {
+        //when
+        participants.initCardSetting(Cards.createAutoCards());
+
+        //then
+        assertThat(dealer.getCardsName().size()).isEqualTo(INIT_CARD_SIZE);
     }
 }

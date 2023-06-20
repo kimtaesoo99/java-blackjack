@@ -11,24 +11,28 @@ public class Referee {
         return compare(firstSum, secondSum);
     }
 
+    public boolean checkBlackJack(final int playerCardOfSum) {
+        return playerCardOfSum == BLACK_JACK;
+    }
+
     private String compare(final int firstSum, final int secondSum) {
-        if (winCase(firstSum, secondSum)) {
+        if (isWinCase(firstSum, secondSum)) {
             return WIN;
         }
-        if (drawCase(firstSum, secondSum)) {
+        if (isDrawCase(firstSum, secondSum)) {
             return DRAW;
         }
         return LOSE;
     }
 
-    private boolean winCase(final int firstSum, final int secondSum) {
+    private boolean isWinCase(final int firstSum, final int secondSum) {
         if (firstSum > secondSum && firstSum <= BLACK_JACK) {
             return true;
         }
         return secondSum > BLACK_JACK && firstSum <= BLACK_JACK;
     }
 
-    private boolean drawCase(final int firstSum, final int secondSum) {
+    private boolean isDrawCase(final int firstSum, final int secondSum) {
         if (firstSum == secondSum) {
             return true;
         }

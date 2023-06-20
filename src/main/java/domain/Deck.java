@@ -24,10 +24,6 @@ public class Deck {
         cards.add(card);
     }
 
-    public List<Card> getCards() {
-        return Collections.unmodifiableList(cards);
-    }
-
     public int getSumOfValue() {
         int sumOfCard = INIT_SUM_CARD;
         for (final Card card : cards) {
@@ -35,7 +31,7 @@ public class Deck {
         }
 
         if (hasAce()) {
-            return tempAceOfValue(sumOfCard);
+            return changeAceOfValue(sumOfCard);
         }
         return sumOfCard;
     }
@@ -58,7 +54,7 @@ public class Deck {
         return number.equals(ACE);
     }
 
-    private int tempAceOfValue(final int sumOfCard) {
+    private int changeAceOfValue(final int sumOfCard) {
         if (sumOfCard + SPECIAL_CARD_VALUE <= BLACK_JACK) {
             return sumOfCard + SPECIAL_CARD_VALUE;
         }
@@ -68,5 +64,9 @@ public class Deck {
     private boolean hasAce() {
         return cards.stream()
             .anyMatch(card -> isAceCard(card.getNumber()));
+    }
+
+    public List<Card> getCards() {
+        return Collections.unmodifiableList(cards);
     }
 }

@@ -2,7 +2,11 @@ package domain;
 
 import exception.DuplicateNameException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Players {
 
@@ -26,6 +30,10 @@ public class Players {
         }
     }
 
+    public void initCardSetting(final Cards cards) {
+        players.forEach(player -> player.initCardSetting(cards));
+    }
+
     public List<Player> getPlayers() {
         return Collections.unmodifiableList(players);
     }
@@ -34,9 +42,5 @@ public class Players {
         List<String> names = new ArrayList<>();
         players.forEach(player -> names.add(player.getName()));
         return Collections.unmodifiableList(names);
-    }
-
-    public void initCardSetting(final Cards cards) {
-        players.forEach(player -> player.initCardSetting(cards));
     }
 }
